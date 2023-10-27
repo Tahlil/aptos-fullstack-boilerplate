@@ -40,6 +40,7 @@ export function Connected() {
       type_arguments: [],
       arguments: [],
     };
+    console.log({newGreeting})
   };
 
   useEffect(() => {
