@@ -1,8 +1,45 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
+## Install dependencies:
+yarn install --ignore-engines 
+
 ## Getting Started
 
-First, run the development server:
+- First, go to move directory and create an aptos account:
+```
+cd move
+aptos int --profile=<Profile name>
+```
+- Copy the value of "account" in `.aptos/config.yaml` file under `profiles` then <Profile name>, in `Move.toml` file under `[addresses]` like this:
+```
+[addresses]
+<Profile name> = <value in account>
+```
+
+- Copy the <Profile name> to `sources/counter.move` to the following:
+```
+module <Profile name>::MyCounter {
+```
+
+
+- To compile 
+```
+aptos move compile
+```
+
+- After the compilation you would get the contract address in Result. In the `frontend` folder create an copy of `env.example` file called `.env` file and set the value of `NEXT_PUBLIC_CONTRACT_ADDRESS` account with, contract address with `0x` prefix.
+
+- Deploy the contract:
+```
+aptos move publish --profile=<Profile name>
+```
+
+
+
+
+- In the `.aptos` folder `config.yaml` file get the private key and import the private key in your browser wallet (Like Petra wallet)
+
+- Then, run the development server:
 
 ```bash
 npm run dev

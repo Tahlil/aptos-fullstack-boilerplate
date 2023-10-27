@@ -1,6 +1,8 @@
 import dynamic from "next/dynamic";
 import { Body } from "./home/Body";
 import { PropsWithChildren } from "react";
+import { useWallet } from "@aptos-labs/wallet-adapter-react";
+
 
 const FixedSizeWrapper = ({ children }: PropsWithChildren) => {
   const fixedStyle = {
@@ -36,9 +38,11 @@ export default function Home() {
 }
 
 function Header() {
+ 
   return (
     <header className="sticky top-0 z-10 flex justify-between items-center px-6 py-4 bg-gradient-to-r from-orange-300 via-orange-400 to-red-400 shadow-md w-full gap-2">
-      <h1 className="text-2xl">Aptogotchi</h1>
+      <h1 className="text-2xl">Boilerplate</h1>
+  
       <WalletButtons />
     </header>
   );

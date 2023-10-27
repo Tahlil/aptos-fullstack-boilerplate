@@ -1,21 +1,19 @@
 [package]
-name = 'aptogotchi'
+name = 'greeting'
 version = '1.0.0'
 upgrade_policy = "compatible"
 
+# value of tahlil should be the same as .aptos/config.yaml file "account" value
 [addresses]
-aptogotchi = '_'
+tahlil = '599de5c42315144b7bb0b5698a6064543c311e7a48bf8a2e6bd78d231a5696d9'
+Std = "0x1"
+aptos_std = "0x1"
 
 # used for testing so you don't need to manually pass in the address in cli
 [dev-addresses]
-aptogotchi = "0x100"
+dev = "0x100"
 
 [dependencies.AptosFramework]
-git = 'https://github.com/aptos-labs/aptos-core.git'
-rev = 'main'
-subdir = 'aptos-move/framework/aptos-framework'
-
-[dependencies.AptosTokenObjects]
-git = 'https://github.com/aptos-labs/aptos-core.git'
-rev = 'main'
-subdir = 'aptos-move/framework/aptos-token-objects'
+git = "https://github.com/aptos-labs/aptos-core.git"
+rev = "mainnet"
+subdir = "aptos-move/framework/aptos-framework"

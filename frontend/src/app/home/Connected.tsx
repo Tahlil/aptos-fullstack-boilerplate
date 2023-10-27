@@ -1,47 +1,61 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { Pet } from "./Pet";
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
-import { Mint } from "./Mint";
 import { NEXT_PUBLIC_CONTRACT_ADDRESS } from "@/utils/env";
-import { getAptosClient } from "@/utils/aptosClient";
+import { AptosClient } from "aptos";
 
-const aptosClient = getAptosClient();
+
+const client = new AptosClient("https://fullnode.devnet.aptoslabs.com");
+
 
 export function Connected() {
-  const [pet, setPet] = useState<Pet>();
+  const [greeting, setGreeting] = useState<String>("test");
+  const [greetingIsSet, setGreetingIsSet] = useState(false);
   const { account, network } = useWallet();
 
-  const fetchPet = useCallback(async () => {
+  const fetchValue = useCallback(async () => {
     if (!account?.address) return;
+    try {
+      console.log("The addresses:")
+    
+      console.log(account?.address)
+      console.log(NEXT_PUBLIC_CONTRACT_ADDRESS)
+      const value = await client.getAccountResources(
+        NEXT_PUBLIC_CONTRACT_ADDRESS
+      );
+      console.log({value})
+      setGreetingIsSet(true);
+      setGreeting(value[0].data.greeting.toString());
 
-    const [name, _, energyPoints, parts] = await aptosClient.view({
-      payload: {
-        function: `${NEXT_PUBLIC_CONTRACT_ADDRESS}::main::get_aptogotchi`,
-        arguments: [account.address],
-      },
-    });
-
-    const noPet = { name: "", birthday: 0, energyPoints: 0, parts: "0x" };
-    if (name !== noPet.name) {
-      setPet({
-        name: name as string,
-        energy_points: parseInt(energyPoints as string),
-        parts: (parts as string).split("0").slice(2).map(Number),
-      });
+    } catch (e: any) {
+      setGreetingIsSet(false);
     }
+   
   }, [account?.address]);
 
   useEffect(() => {
     if (!account?.address || !network) return;
 
-    fetchPet();
-  }, [account?.address, fetchPet, network]);
+    fetchValue();
+  }, [account?.address, fetchValue, network]);
 
   return (
     <div className="flex flex-col gap-3 p-3">
-      {pet ? <Pet pet={pet} setPet={setPet} /> : <Mint fetchPet={fetchPet} />}
+       <div className="text-center">
+        <p className="font-medium">Connected to 
+        <p className="bg-blue-100 text-blue-800 text-s font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">{network?.name}</p>
+         </p>
+        <p className="font-medium">Connected address  
+        <p className="bg-blue-100 text-blue-800 text-s font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300">{account?.address}</p>
+        </p>
+        {greetingIsSet ?
+        <p>Greeting: {greeting}</p>
+        :
+        <p>Greeting not set</p>
+        }
+        
+      </div>
     </div>
   );
 }
