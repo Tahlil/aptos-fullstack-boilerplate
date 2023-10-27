@@ -15,19 +15,19 @@ export function Connected() {
     useState<boolean>(false);
   const { account, network, signAndSubmitTransaction } = useWallet();
 
+  const updateGreetingFromContract = async () => {
+    const value = await client.getAccountResources(
+      NEXT_PUBLIC_CONTRACT_ADDRESS
+    );
+    console.log({ value });
+    setGreetingIsSet(true);
+    setGreeting(value[0].data.greeting.toString());
+  }
+
   const fetchValue = useCallback(async () => {
     if (!account?.address) return;
     try {
-      console.log("The addresses:");
-
-      console.log(account?.address);
-      console.log(NEXT_PUBLIC_CONTRACT_ADDRESS);
-      const value = await client.getAccountResources(
-        NEXT_PUBLIC_CONTRACT_ADDRESS
-      );
-      console.log({ value });
-      setGreetingIsSet(true);
-      setGreeting(value[0].data.greeting.toString());
+      await updateGreetingFromContract();
     } catch (e: any) {
       setGreetingIsSet(false);
     }
@@ -48,7 +48,7 @@ export function Connected() {
       const response = await signAndSubmitTransaction(payload);
       // wait for transaction
       const res = await client.waitForTransaction(response.hash);
-      console.log({res})
+      await updateGreetingFromContract();
     } catch (error) {
       console.log("error", error);
     }
