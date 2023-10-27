@@ -13,7 +13,7 @@ export function Connected() {
   const [greetingIsSet, setGreetingIsSet] = useState(false);
   const [transactionInProgress, setTransactionInProgress] =
     useState<boolean>(false);
-  const { account, network } = useWallet();
+  const { account, network, signAndSubmitTransaction } = useWallet();
 
   const fetchValue = useCallback(async () => {
     if (!account?.address) return;
@@ -34,13 +34,27 @@ export function Connected() {
   }, [account?.address]);
 
   const updateGreeting = async () => {
+    if (!account?.address) return;
+    setTransactionInProgress(true);
     const payload = {
       type: "entry_function_payload",
       function: `${NEXT_PUBLIC_CONTRACT_ADDRESS}::test::update_greeting`,
       type_arguments: [],
-      arguments: [],
+      arguments: [newGreeting],
     };
     console.log({newGreeting})
+    try {
+      // sign and submit transaction to chain
+      const response = await signAndSubmitTransaction(payload);
+      // wait for transaction
+      const res = await client.waitForTransaction(response.hash);
+      console.log({res})
+    } catch (error) {
+      console.log("error", error);
+    }
+    finally {
+      setTransactionInProgress(false);
+    }
   };
 
   useEffect(() => {
