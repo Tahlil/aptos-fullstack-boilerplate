@@ -12,7 +12,7 @@ module tahlil::test {
         });
     }
 
-    public fun update_greeting(account: &signer, new_greeting: String) acquires Greeting {
+    public entry fun update_greeting(account: &signer, new_greeting: String) acquires Greeting {
         let greet = borrow_global_mut<Greeting>(signer::address_of(account));
         greet.greeting = new_greeting;
     }

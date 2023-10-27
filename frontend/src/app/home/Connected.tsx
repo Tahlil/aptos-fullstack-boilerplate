@@ -12,6 +12,8 @@ const client = new AptosClient("https://fullnode.devnet.aptoslabs.com");
 export function Connected() {
   const [greeting, setGreeting] = useState<String>("test");
   const [greetingIsSet, setGreetingIsSet] = useState(false);
+  const [transactionInProgress, setTransactionInProgress] =
+    useState<boolean>(false);
   const { account, network } = useWallet();
 
   const fetchValue = useCallback(async () => {
@@ -33,6 +35,16 @@ export function Connected() {
     }
    
   }, [account?.address]);
+
+  const updateGreeting = async () => {
+    const payload = {
+      type: "entry_function_payload",
+      function: `${NEXT_PUBLIC_CONTRACT_ADDRESS}::test::create_list`,
+      type_arguments: [],
+      arguments: [],
+    };
+  }
+
 
   useEffect(() => {
     if (!account?.address || !network) return;
