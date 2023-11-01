@@ -182,6 +182,18 @@ export function Connected() {
               Whitelist Address
             </button>
           </div>
+
+          <div className='flex'>
+        <div className='p-10 bg-gradient-to-r from-yellow-100'>
+                 <h1 className="text-2xl">Account Type:</h1>
+
+        </div>
+    </div>
+
+
+          <div>
+         
+</div>
         
         </div>
 
