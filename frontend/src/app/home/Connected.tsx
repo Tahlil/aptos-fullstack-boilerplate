@@ -57,6 +57,29 @@ export function Connected() {
     }
   };
 
+  const whitelistAddress = async () => {
+    if (!account?.address) return;
+    setTransactionInProgress(true);
+    const payload = {
+      type: "entry_function_payload",
+      function: `${NEXT_PUBLIC_CONTRACT_ADDRESS}::test::update_greeting`,
+      type_arguments: [],
+      arguments: [newGreeting],
+    };
+    console.log({ newGreeting });
+    try {
+      // sign and submit transaction to chain
+      const response = await signAndSubmitTransaction(payload);
+      // wait for transaction
+      await client.waitForTransaction(response.hash);
+      await updateGreetingFromContract();
+    } catch (error) {
+      console.log("error", error);
+    } finally {
+      setTransactionInProgress(false);
+    }
+  };
+
 
 
   useEffect(() => {
@@ -135,24 +158,23 @@ export function Connected() {
           )}
         </div>
 
-        <div role="status" className="flex items-center justify-center p-5">
+        <div>
         <div className="flex rounded-md shadow-sm m-11">
             <span className="px-4 inline-flex items-center min-w-fit rounded-l-md border border-r-0 border-gray-200 bg-gray-50 text-sm text-gray-500 dark:bg-gray-700 dark:border-gray-700 dark:text-gray-400">
-              Address to Whitelisted Address
+              Address to Whitelist
             </span>
             <input
               type="text"
               onChange={(event) => setAddress(event.target.value + "")}
-              className="py-2 px-3 pr-11 block w-full border-gray-200 shadow-sm rounded-r-md text-sm focus:z-10 focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400"
+              className="py-2 px-12 pr-11 block w-full border-gray-200 shadow-sm rounded-r-md text-sm focus:z-10 focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400"
               placeholder="public address"
             />
           </div>  
 
-          <div>
+          <div className="flex items-center justify-center">
             <button
-              onClick={updateGreeting}
-              className="p-3"
-              style={{ height: "40px", backgroundColor: "#3f67ff" }}
+              onClick={whitelistAddress}
+              className="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"
             >
               Whitelist Address
             </button>
