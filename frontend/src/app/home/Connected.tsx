@@ -131,6 +131,17 @@ export function Connected() {
             </button>
           )}
         </div>
+
+        <div role="status" className="flex items-center justify-center p-5">
+        <button
+              onClick={updateGreeting}
+              className="p-3"
+              style={{ height: "40px", backgroundColor: "#3f67ff" }}
+            >
+              Mint NFT
+            </button>
+        </div>
+
       </div>
     </div>
   );
