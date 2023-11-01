@@ -15,7 +15,7 @@ module tahlil::test {
     const ENOT_EVENT_MANAGER: u64 = 2;
     const ENOT_OWNER: u64 = 3;
 
-     struct Config has key {
+    struct Config has key {
         whitelist: SmartVector<address>, // Whitelisting event managers
         extend_ref: object::ExtendRef, /// `extend_ref` of the event manager object. Used to obtain its signer.
     }

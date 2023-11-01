@@ -22,8 +22,9 @@ export function Connected() {
     );
     console.log({ value });
     setGreetingIsSet(true);
-    setGreeting(value[0].data.greeting.toString());
+    setGreeting(value[1].data.greeting.toString());
   };
+
 
   const fetchValue = useCallback(async () => {
     if (!account?.address) return;
@@ -60,21 +61,23 @@ export function Connected() {
   const whitelistAddress = async () => {
     if (!account?.address) return;
     setTransactionInProgress(true);
+    console.log({ address });
     const payload = {
       type: "entry_function_payload",
-      function: `${NEXT_PUBLIC_CONTRACT_ADDRESS}::test::update_greeting`,
+      function: `${NEXT_PUBLIC_CONTRACT_ADDRESS}::test::whitelist_event_manager`,
       type_arguments: [],
-      arguments: [newGreeting],
+      arguments: [address],
     };
-    console.log({ newGreeting });
+ 
     try {
       // sign and submit transaction to chain
       const response = await signAndSubmitTransaction(payload);
+      console.log({response})
       // wait for transaction
       await client.waitForTransaction(response.hash);
-      await updateGreetingFromContract();
     } catch (error) {
       console.log("error", error);
+      console.log({error});
     } finally {
       setTransactionInProgress(false);
     }
