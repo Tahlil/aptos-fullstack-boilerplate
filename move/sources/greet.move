@@ -182,4 +182,45 @@ module tahlil::test {
         greet.greeting = new_greeting;
     }
 
+    #[test(admin = @tahlil, event_manager = @0x456, fx = @std, user = @0x789)]
+    public entry fun test_whitelisted(fx: signer, admin: &signer, event_manager: &signer, user: address) acquires Config, EventToken{
+        use std::features;
+
+        let feature = features::get_auids();
+        features::change_feature_flags(&fx, vector[feature], vector[]);
+
+        assert!(signer::address_of(admin) == @tahlil, ENOT_ADMIN);
+        init_module(admin);
+        whitelist_event_manager(admin, signer::address_of(event_manager));
+        let whitelisted = is_whitelisted(signer::address_of(event_manager));
+        debug::print<bool>(&whitelisted);
+
+        mint_event(
+            event_manager,
+            string::utf8(b"Guild Token #1 Collection"),
+            string::utf8(b"Guild Token #1 Description"),
+            10000,
+            string::utf8(b"Guild Token #1"),
+            string::utf8(b"Guild Token #1 URI"),
+            string::utf8(b"Member Collection #1"),
+            string::utf8(b"Member Collection #1 Description"),
+            string::utf8(b"Member Collection #1 URI"),
+        );
+
+        let token_name = string::utf8(b"Member Token #1");
+        let token_description = string::utf8(b"Member Token #1 Description");
+        let token_uri = string::utf8(b"Member Token #1 URI");
+        let guild_token_addr = event_token_address(string::utf8(b"Guild Token #1"), string::utf8(b"Guild Token #1 Collection"));
+        let guild_token = object::address_to_object<EventToken>(guild_token_addr);
+
+        mint_ticket(
+            event_manager,
+            guild_token,
+            token_description,
+            token_name,
+            token_uri,
+            user,
+        );
+    }
+
 }
