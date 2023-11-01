@@ -21,9 +21,19 @@ export function Connected() {
       NEXT_PUBLIC_CONTRACT_ADDRESS
     );
     console.log({ value });
+
     setGreetingIsSet(true);
     setGreeting(value[1].data.greeting.toString());
   };
+
+  const updateWhitelist = async () => {
+    if (!account?.address) return;
+    const value = await client.getAccountResources(
+      NEXT_PUBLIC_CONTRACT_ADDRESS
+    );
+    return value[0].data.whitelist.inline_vec.includes(account?.address+"")
+  };
+  
 
 
   const fetchValue = useCallback(async () => {
