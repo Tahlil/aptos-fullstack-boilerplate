@@ -180,13 +180,15 @@ export function Connected() {
               onClick={whitelistAddress}
               className="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"
             >
-              Whitelist Address
+              Whitelist Address 📝
             </button>
           </div>
 
           <div className='flex'>
         <div className='p-10 bg-gradient-to-r from-purple-100'>
-                 <h1 className="text-2xl">Account Type: <span className="text-purple-600">{accountIsWhitelisted ? "Whitelisted Event Manager" : "Customer"} </span>  </h1>
+                 <h1 className="text-2xl">Account Type: <span className="text-purple-600">{
+                 NEXT_PUBLIC_CONTRACT_ADDRESS === account?.address ? "Admin" : (accountIsWhitelisted ? "Whitelisted Event Manager" : "Customer")
+                 } </span>  </h1>
 
         </div>
     </div>
