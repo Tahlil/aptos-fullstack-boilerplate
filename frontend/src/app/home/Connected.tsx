@@ -12,6 +12,7 @@ export function Connected() {
   const [address, setAddress] = useState<String>("");
   const [newGreeting, setNewGreeting] = useState<String>("test");
   const [greetingIsSet, setGreetingIsSet] = useState(false);
+  const [accountIsWhitelisted, setAccountIsWhitelisted] = useState(false);
   const [transactionInProgress, setTransactionInProgress] =
     useState<boolean>(false);
   const { account, network, signAndSubmitTransaction } = useWallet();
@@ -21,21 +22,11 @@ export function Connected() {
       NEXT_PUBLIC_CONTRACT_ADDRESS
     );
     console.log({ value });
-
+    setAccountIsWhitelisted(value[0].data.whitelist.inline_vec.includes(account?.address+""))
     setGreetingIsSet(true);
     setGreeting(value[1].data.greeting.toString());
   };
-
-  const updateWhitelist = async () => {
-    if (!account?.address) return;
-    const value = await client.getAccountResources(
-      NEXT_PUBLIC_CONTRACT_ADDRESS
-    );
-    return value[0].data.whitelist.inline_vec.includes(account?.address+"")
-  };
   
-
-
   const fetchValue = useCallback(async () => {
     if (!account?.address) return;
     try {
@@ -194,8 +185,8 @@ export function Connected() {
           </div>
 
           <div className='flex'>
-        <div className='p-10 bg-gradient-to-r from-yellow-100'>
-                 <h1 className="text-2xl">Account Type:</h1>
+        <div className='p-10 bg-gradient-to-r from-purple-100'>
+                 <h1 className="text-2xl">Account Type: <span className="text-purple-600">{accountIsWhitelisted ? "Whitelisted Event Manager" : "Customer"} </span>  </h1>
 
         </div>
     </div>
