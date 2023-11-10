@@ -84,7 +84,30 @@ export function Connected() {
     }
   };
 
-
+  const createEvent = async () => {
+    if (!account?.address) return;
+    setTransactionInProgress(true);
+    console.log({ address });
+    const payload = {
+      type: "entry_function_payload",
+      function: `${NEXT_PUBLIC_CONTRACT_ADDRESS}::test::mint_event`,
+      type_arguments: [],
+      arguments: ["eventCollection", "Test desc", 11, "name", "https://images.lumacdn.com/cdn-cgi/image", "as", "df", "jk"],
+    };
+ 
+    try {
+      // sign and submit transaction to chain
+      const response = await signAndSubmitTransaction(payload);
+      console.log({response})
+      // wait for transaction
+      await client.waitForTransaction(response.hash);
+    } catch (error) {
+      console.log("error", error);
+      console.log({error});
+    } finally {
+      setTransactionInProgress(false);
+    }
+  };
 
   useEffect(() => {
     if (!account?.address || !network) return;
@@ -195,7 +218,7 @@ export function Connected() {
 
     <div className="flex items-center justify-center m-2">
             <button
-              onClick={whitelistAddress}
+              onClick={createEvent}
               className="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"
             >
               Create Event 📢
